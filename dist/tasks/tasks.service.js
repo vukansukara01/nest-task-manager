@@ -17,6 +17,24 @@ let TasksService = class TasksService {
     getAllTasks() {
         return this.tasks;
     }
+    getTasksWithFilters(filterDto) {
+        const { status, search } = filterDto;
+        console.log(status, 'IDEMO');
+        let tasks = this.getAllTasks();
+        console.log(tasks[0].status, 'NAJJACI');
+        if (status) {
+            tasks = tasks.filter((task) => task.status === status);
+        }
+        if (search) {
+            tasks = tasks.filter((task) => {
+                if (task.title.includes(search) || task.description.includes(search)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+        return tasks;
+    }
     getTaskById(id) {
         return this.tasks.find((e) => e.id == id);
     }
@@ -33,6 +51,11 @@ let TasksService = class TasksService {
     }
     deleteTask(id) {
         this.tasks = this.tasks.filter((task) => task.id !== id);
+    }
+    updateTaskStatus(id, status) {
+        const task = this.getTaskById(id);
+        task.status = status;
+        return task;
     }
 };
 TasksService = __decorate([

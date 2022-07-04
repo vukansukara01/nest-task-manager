@@ -19,9 +19,7 @@ let TasksService = class TasksService {
     }
     getTasksWithFilters(filterDto) {
         const { status, search } = filterDto;
-        console.log(status, 'IDEMO');
         let tasks = this.getAllTasks();
-        console.log(tasks[0].status, 'NAJJACI');
         if (status) {
             tasks = tasks.filter((task) => task.status === status);
         }
@@ -36,7 +34,11 @@ let TasksService = class TasksService {
         return tasks;
     }
     getTaskById(id) {
-        return this.tasks.find((e) => e.id == id);
+        const found = this.tasks.find((e) => e.id == id);
+        if (!found) {
+            throw new common_1.NotFoundException();
+        }
+        return found;
     }
     createTask(createTaskDto) {
         const { title, description } = createTaskDto;
@@ -50,7 +52,8 @@ let TasksService = class TasksService {
         return task;
     }
     deleteTask(id) {
-        this.tasks = this.tasks.filter((task) => task.id !== id);
+        const found = this.getTaskById(id);
+        this.tasks = this.tasks.filter((task) => task.id !== found.id);
     }
     updateTaskStatus(id, status) {
         const task = this.getTaskById(id);
